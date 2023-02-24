@@ -1,0 +1,15 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{    
+   overflow-x: hidden;
+}
+
+.canvas{
+    margin: 0 auto ; 
+    /* background: url("images/background.png") ; */
+    background-size: cover;
+    background-position: bottom;
+}
