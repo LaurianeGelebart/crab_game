@@ -4,7 +4,7 @@
 }
 
 body{    
-   overflow-x: hidden;
+   overflow: hidden;
 }
 
 .canvas{
@@ -12,4 +12,6 @@ body{
     /* background: url("images/background.png") ; */
     background-size: cover;
     background-position: bottom;
+    background-color: aqua;
+    
 }
