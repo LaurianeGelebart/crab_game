@@ -1,0 +1,628 @@
+*{
+    margin: 0;
+    padding: 0;
+   /* cursor : wait ; */
+}
+
+body{    
+   overflow-x: hidden;
+}
+
+section{
+    display: block;
+}
+
+.un-display{
+    display: none;
+}
+
+nav {    
+    position: fixed;
+    top: 0;
+    z-index: 1;
+}
+
+.navbar{
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    padding: 1vw;
+    align-items: center;
+    list-style: none;
+    justify-content: center;
+    background-color: palegoldenrod;
+    box-shadow: 0 2px 2vw black;
+}
+
+.nav-item{
+    width: auto ;
+}
+
+.nav-link{
+    text-decoration: none;
+    width: auto ;
+    margin: 0 2vw ;
+    color: black;
+    font-size: 1.4vw;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.nav-item:hover .nav-link{
+    animation: link-hover 2s ease-in-out infinite ;
+}
+
+main {
+    margin: 15vh 5vw 3vh;
+}
+
+
+/*------------------------------- ACCUEIL ----------------------------- */
+
+.home{
+    background-color:aqua;
+}
+
+.title{
+    font-family: 'Perfect Dark (BRK)', sans-serif;
+    text-shadow: 5px 3px red;
+    font-size: 2.9vw;
+    cursor: default ; 
+}
+
+.title:hover{
+    animation: title-hover 2s ease-in-out infinite ;
+}
+
+.image-home{
+    width: 30%;
+    border-radius: 3%;
+}
+
+.turn{
+    animation: image-hover 2s linear infinite ;
+}
+
+.desc {    
+    padding: 0 3vw;
+    height: auto;
+}
+
+.desc div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.desc p{
+    width: 50%;
+    font-family: 'Ming', sans-serif;
+    font-size: 1.3vw;
+    color: magenta;
+    padding: 0 5vw 0 5vw;
+    height: auto;
+}
+
+.title2{
+    font-size: 2.5vw;
+    margin: 2vw;
+    font-family: 'Combo', cursive;
+}
+
+/* MAPS */
+.maps{
+    display: flex;
+    margin: 15vh auto ;
+    flex-direction: column;
+}
+
+.maps div{
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+iframe{
+    width: 45% !important ;
+    margin-right: 3vw; 
+    height: 55vh;
+}
+
+.incroyable{
+    width: 45%;
+    border-radius: 3%;
+}
+
+/* AVIS */
+.avis {
+    margin-bottom: 3vh;
+}
+
+.galery-comment {
+    display: flex;
+    flex-wrap: wrap;
+    width: 85%;
+    margin: 1vw auto;
+}
+
+.comment{
+    width: 25vw;
+    margin: 1vw 2vw;
+    padding: 4vw 5vw 6.5vw 2vw;
+    background-image: url("images/parchemin.png") ;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: auto;
+    min-height: 10vw;
+}
+
+.comment .text{
+    font-family: 'Dancing Script', cursive;
+    padding-bottom: 30px;
+    font-size: 1.2vw;
+}
+
+.comment h3{
+    font-family: arial;
+    font-size: 1vw;
+}
+
+.stars{
+    width: 100%;
+    margin: 0.5vw 0;
+}
+
+.stars img{
+    width: 3vw;
+}
+
+/* ---------------------------- HISTOIRE ------------------------------- */
+
+.story{
+    background-color: palegreen;
+}
+
+.story p{
+    font-family: 'Ming', sans-serif;
+    font-size: 1vw;
+    padding: 1vw 0 ;
+}
+
+.story h2{
+    font-family: 'Ming', sans-serif;
+    font-size: 1.3vw;
+    color: deeppink;
+    text-decoration:blue wavy underline;
+    font-family: arial ; 
+}
+
+.flex_content{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.flex_content img{
+    padding: 0 10%;
+    height: 50vh;
+    width: auto;
+}
+
+.flex_content p{
+    width: 70%;
+}
+
+
+/* ------------------------------ CONTACT ---------------------------------- */
+
+.contact{
+    overflow-y: hidden;
+}
+
+#BackgroundVideo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 0;
+}
+
+.content {
+    position: fixed;
+    z-index: 1;
+  }
+
+form{
+    width: 30vw ;
+    background-image: url('images/textureLettre.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 3vw; 
+    margin: 3vw 0;
+}
+
+input{
+    width: 100%;
+    margin: 0.5vw 0;
+}
+
+textarea{
+    width: 100%;
+    margin: 0.5vw 0;
+}
+
+.btn{
+    width: auto;
+    min-width: 40%;
+    margin: 0.5vw auto;
+    padding: 0.5vw;
+    background-color: red;
+    font-size: 1vw;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    border-radius: 10%;
+    animation: btn-hover 2s ease-in-out infinite ;
+}
+
+.content-bird{
+    position: absolute;
+    top : 50vh ;
+    left: -35vw ; 
+    width: 15vw;
+    height: auto;
+}
+
+.pigeon {
+    width: 15vw;
+    z-index: 1;
+}
+
+.animation-pigeon{
+    animation: pigeon 4s linear  ;
+}
+
+/* ----------------------------- JEU ----------------------------- */
+
+
+.phone{
+    display: none;
+}
+
+.ordi{
+    display: block;
+}
+
+.go{
+    cursor: pointer;
+}
+
+.game{
+    display: flex;
+    cursor: url("images/Crosshair Red.png"), auto;
+}
+
+.jeu{
+    color: white;
+}
+
+.jeu .title{
+    color: white !important;
+}
+
+.jeuBackground{
+    background-image: url("images/squelette.gif"); 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-height: 100vh;
+}
+
+.canvas{
+    margin: 0 auto ; 
+    background: url("images/background.png") ;
+    background-size: cover;
+    background-position: bottom;
+}
+
+/* Leaderboard */
+table{
+    width:70vw;
+}
+
+.titleLeaderboard{
+    padding : 7vh 0 5vh;
+    text-align: center;
+    font-size: 5vw;
+    font-family: 'Combo', cursive;
+    animation: title-hover 2s ease-in-out infinite ;
+}
+
+table{
+    border: 1px solid #333;
+    font-size: 2vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table{
+    margin: 10vh auto 20vh;
+}
+
+th{
+    background-color: burlywood;
+}
+
+td{
+    padding: 0 5vw;
+    width:100%;
+    text-align: center;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 1.5vw;
+    margin: 0;
+    background-color: cadetblue;
+}
+
+.jeu section {
+    margin-left: auto ;
+    margin-right: auto;
+}
+
+.jeu form{    
+    background-image: url('images/confetti.jpg');
+    color: black; 
+}
+/* ----------------------------- RESPONSIVE ----------------------------- */
+
+@media (max-width: 1000px) {
+
+section{
+    margin-bottom: 10vh !important;
+}
+
+.nav-link{
+    margin: 0 2vw ;
+    font-size: 5vw;
+}
+
+main {
+    margin-top: 8vh;
+}
+
+.title{
+    animation: title-hover 2s ease-in-out infinite ;
+    font-size: 10vw;
+}
+
+.desc div{
+    flex-direction: column;
+}
+
+.desc p{
+    width: 100%;
+    font-size: 2.8vw;
+    padding: 4vw;
+}
+
+.desc img{
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+iframe{
+    width: 90vw !important ; 
+    height: 70vh !important ; 
+    margin-bottom: 5vh;
+}
+
+.maps div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.incroyable{
+    width: 70vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.stars img{
+    width: 6vw;
+}
+
+form{
+    width: 80% ;
+}
+
+.comment{
+    width: 80vw;
+    margin: 1vw 2vw;
+    padding: 12vw 14vw 12vw 5vw;
+    background-size: 100% 100%;
+}
+
+.comment .text{
+    font-size: 4vw;
+    padding-bottom: 5px;
+}
+
+.comment h3{
+    font-size: 3vw;
+}
+
+
+.story p{
+    font-size: 3vw; 
+}
+
+.story .title{
+    font-size: 6vw;
+}
+
+.story h2{
+    font-size: 4vw;
+}
+
+.flex_content{
+    flex-direction: column;
+    justify-content: center;
+}
+
+.flex_content img{
+    width: 80%;
+    height: auto;
+    padding: auto;
+    margin-bottom: 5vh;
+}
+
+.flex_content p{
+    width: 100%;
+}
+
+
+.title2{
+    font-size: 6vw;
+    text-decoration:blue wavy underline;
+}
+
+#BackgroundVideo {
+    height: 100vh;
+    width: auto;
+}
+
+.btn{
+    height: 10vh;
+}
+
+.phone{
+    display: block;
+}
+
+.ordi{
+    display: none;
+}
+
+table{
+    width:80vw;
+}
+
+table{
+    font-size: 5vw;
+}
+
+td{
+    font-size: 4vw;
+}
+
+}
+
+/* ----------------------------- ANIMATION ----------------------------- */
+
+@keyframes link-hover {
+    0% {
+        color:black;
+        font-size: 1.4vw;
+    }
+    15% {
+        color:red;
+        font-size: 1.7vw;
+    }
+    30% {
+        color: orange;
+        font-size: 1.3vw;
+    }
+    45% {
+        color: yellow;
+        font-size: 0.9vw;
+    }
+    60% {
+        color: green;
+        font-size: 1.4vw;
+    }
+    75% {
+        color: blue;
+        font-size: 1.8vw;
+    }
+    90% {
+        color: purple;
+        font-size: 1.1vw;
+    }
+    100% {
+        color: black;
+        font-size: 1.4vw;
+    }
+}
+
+@keyframes title-hover {
+    0% {
+        text-shadow: 5px 3px red;
+    }
+    15% {
+        text-shadow: 5px 3px orange;
+    }
+    30% {
+        text-shadow: 5px 3px yellow;
+    }
+    45% {
+        text-shadow: 5px 3px green;
+    }
+    60% {
+        text-shadow: 5px 3px blue;
+    }
+    75% {
+        text-shadow: 5px 3px indigo;
+    }
+    90% {
+        text-shadow: 5px 3px purple;
+    }
+    100% {
+        text-shadow: 5px 3px red;
+    }
+}
+
+@keyframes image-hover {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes btn-hover {
+    0% {
+        background-color: red;
+    }
+    15% {
+        background-color: orange;
+    }
+    30% {
+        background-color: yellow;
+    }
+    45% {
+        background-color: green;
+    }
+    60% {
+        background-color: blue;
+    }
+    75% {
+        background-color: indigo;
+    }
+    90% {
+        background-color:  purple;
+    }
+    100% {
+        background-color: red;
+    }
+}
+
+@keyframes pigeon {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(3000px);
+    }
+}
