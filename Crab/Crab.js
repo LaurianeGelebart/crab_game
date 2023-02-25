@@ -6,7 +6,7 @@ class Crab{
         this.image = image;
         this.hat=-1;
         this.shoes=-1;
-        this.glasses=-1;
+        this.glasses=0;
         this.speedX=0;
         this.speedY=0;
         this.hidden=0;
