@@ -82,12 +82,12 @@ function init() {
     hat2.src = 'img/hat2.png';
     hat2Preview.src = 'img/hat2P.png';
 
-    shoes11.src = 'img/shoes12.png';
+    shoes11.src = 'img/shoes1.png';
     shoes1Preview.src = 'img/shoes1P.png';
-    shoes12.src = 'img/shoes1.png';
-    shoes21.src = 'img/shoes12.png';
+    shoes12.src = 'img/shoes12.png';
+    shoes21.src = 'img/shoes1.png';
     shoes2Preview.src = 'img/shoes1P.png';
-    shoes22.src = 'img/shoes1.png';
+    shoes22.src = 'img/shoes12.png';
 
     glasses1.src = 'img/glasses.png';
     glasses1Preview.src = 'img/glasses1P.png';
@@ -124,8 +124,8 @@ function init() {
 
     // Crabs
     crabList = [
-        new Crab(1, height/5, height/5, 0.08*width, height/15, crabImage11, crabImage12),
-        new Crab(2, height/5, 4*height/5, 0.08*width, height/15, crabImage21, crabImage22)
+        new Crab(1, height/5, height/5, 0.08*width, 0.1*height, crabImage11, crabImage12),
+        new Crab(2, height/5, 4*height/5, 0.08*width, 0.1*height, crabImage21, crabImage22)
     ]
     
     // Rocks
@@ -172,8 +172,7 @@ canvas.addEventListener('keydown', (evt) => {
 })
 
 canvas.addEventListener('keyup', (evt) => {
-    keys[evt.key] = false;
- 
+    keys[evt.key] = false; 
 })
 /* ---------------------------------------- */
 
@@ -399,11 +398,60 @@ function collisionRock(rock, crab){
             }
         }
     
-    
 
     return false;
 }
 
+function collisionCrab(){
+    if (rectangleCollision(crabList[0].x, crabList[0].y, crabList[0].width, crabList[0].height, 
+        crabList[1].x, crabList[1].y, crabList[1].width, crabList[1].height,)){
+        let i, j, attack=false; 
+        if (keys['b']) {
+            i = 1 ; 
+            j = 0 ; 
+            attack = true ; 
+        }
+        if (keys['v']) {
+            i = 0 ; 
+            j = 1 ; 
+            attack = true ; 
+        }
+        if (attack){
+            if (!(crabList[j].hat<0 && crabList[j].shoes<0 && crabList[j].glasses<0 && crabList[j].hand<0)) {
+                let lost = false ; 
+                while(!lost){
+                    switch (random(0,3)){
+                        default: 
+                            if (crabList[j].hat > -1 ){
+                                crabList[j].hat = -1 ; 
+                                lost = true ; 
+                            }
+                            break ; 
+                        case 1: 
+                            if (crabList[j].shoes > -1 ){
+                                crabList[j].shoes = -1 ;
+                                lost = true ; 
+                            }
+                            break ; 
+                        case 2: 
+                            if (crabList[j].glasses > -1 ){
+                                crabList[j].glasses = -1 ; 
+                                lost = true ; 
+                            }
+                            break ; 
+                        case 3: 
+                            if (crabList[j].hand > -1 ){
+                                crabList[j].hand = -1 ; 
+                                lost = true ; 
+                            }
+                            break ;
+                        }
+                    }
+                }
+            }
+            
+        }
+}
 
 
 function crabMovement(){
@@ -433,6 +481,7 @@ function crabMovement(){
                     crab.y = oldY;
                 } 
                 isInZone(crab); 
+                collisionCrab();
             })
         }
     })
@@ -552,7 +601,7 @@ function drawCrabs(){
         if(crab.gathering){
             context.drawImage(loadingRectangle, crab.x, crab.y - 0.2*crab.height, crab.width, crab.height*0.1);
             context.drawImage(loadingRectangleFill, crab.x+0.01*crab.width, crab.y - 0.2*crab.height +0.01*crab.height, (crab.width -0.02*crab.width)*max(crab.itemGathering)/1200, crab.height*0.1 -0.02*crab.height);
-            console.log(max(crab.itemGathering))
+            //console.log(max(crab.itemGathering))
         }
     })
 }
