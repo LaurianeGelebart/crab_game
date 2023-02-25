@@ -104,14 +104,9 @@ function init() {
 
     // Time
     setInterval(()=>{totalSeconds++;},1000)
-<<<<<<< HEAD
     setInterval(()=>{addNewClothings();},15000)
-    //let seagull = new Audio('sons/sniper.wav');
-    let timeSeagull = getTimeOfNextSeagull(totalSeconds);
-=======
     seagullSound = new Audio('sound/seagull.mp3');
     seagullTime = getTimeOfNextSeagull(totalSeconds);
->>>>>>> main
 
     seagullSize = height/10;
     seagull = new Seagull();
@@ -142,20 +137,11 @@ switch(state){
 
     case 1 : // game 
         key(); 
-<<<<<<< HEAD
-        crab1.move();
-        crab2.move();
-        isInZone(crab1); 
-       // collision(crab1);
-      //  collision(crab2);
-=======
-        is_in_zone(); 
 
         crabMovement();
         
         seagullActivity();
         
->>>>>>> main
 
     break ;
 
@@ -179,12 +165,7 @@ function draw(){
     break ; 
 
     case 1 : // game 
-<<<<<<< HEAD
     drawZone(); 
-=======
-
-    draw_zone(); 
->>>>>>> main
 
     drawCrabs();
 
@@ -209,7 +190,6 @@ function getTimeOfNextSeagull(seconds){
     return seconds+random(5,15);
 }
 
-<<<<<<< HEAD
 function random(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -219,7 +199,8 @@ function addNewClothings(){
         zone.object = random(0,3)-1; 
         zone.type = random(0,1); 
     })
-=======
+}
+
 function seagullActivity(){
     if (seagullTime==totalSeconds){
         seagullSound.play();
@@ -234,20 +215,6 @@ function seagullActivity(){
         })
         seagull.move();
     }
-}
-
-
-function is_in_zone(){
-    
->>>>>>> main
-}
-
-function drawZone(){
-    zones.forEach((zone) =>{
-        if(zone.object>-1){
-            context.drawImage(clothings[zone.object][zone.type].active_image, zone.x, zone.y, zone.width, zone.height);
-        }
-    })
 }
 
 function key(){
@@ -366,7 +333,8 @@ function crabMovement(){
         if(collision(crab)){
             crab.x = oldX;
             crab.y = oldY;
-        }
+        } 
+        isInZone(crab); 
     })
     
 }
@@ -388,7 +356,7 @@ function drawRocks(){
 
 }
 
-function draw_zone(){
+function drawZone(){
     for (let i in zones){
         if(zones[i].object>-1){
             context.drawImage(clothings[zones[i].object][zones[i].type].active_image, zones[i].x, zones[i].y, zones[i].width, zones[i].height);
