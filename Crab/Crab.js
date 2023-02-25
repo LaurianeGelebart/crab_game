@@ -18,5 +18,9 @@ class Crab{
         this.y+=this.speedY;
         this.speedX/=1.03;
         this.speedY/=1.03;
+        if (Math.abs(this.speedX) < 0.001)
+            this.speedX=0;
+        if (Math.abs(this.speedY) < 0.001)
+            this.speedY=0;
     }
 }
