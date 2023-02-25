@@ -108,7 +108,7 @@ function init() {
     seagullTime = getTimeOfNextSeagull(totalSeconds);
 
     seagullSize = height/10;
-    seagull = new Seagull();
+    seagull = new Seagull(seagullImage);
 
 
 
@@ -198,11 +198,7 @@ function seagullActivity(){
 
     if (seagullTime+2==totalSeconds){
 
-        crabList.forEach((crab) => {
-            if (crab.hidden==0){
-                seagull.hunt(crab);
-            }
-        })
+        seagull.hunt(crabList);
         seagull.move();
     }
 }
@@ -338,7 +334,5 @@ function drawCrabs(){
 }
 
 function drawSeagull(){
-    if (seagull.hunting){
         context.drawImage(seagull.image, seagull.x, seagull.y, seagullSize, seagullSize);
-    }
 }

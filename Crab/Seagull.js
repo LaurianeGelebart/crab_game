@@ -1,18 +1,21 @@
 class Seagull{
-    constructor(){
+    constructor(image){
         this.x = 0;
         this.y = 0;
-        this.image;
+        this.image = image;
         this.directionX;
         this.directionY;
-        this.hunting=0;
+        this.hunting=-1;
     }
 
-    hunt(crab){
-        this.hunting=1;
-        this.directionX=crab.x-this.x
-        this.directionY=crab.y-this.y
-        this.normalize();
+    hunt(crabList){
+        for(let i in crabList){
+            this.hunting=i;
+            this.directionX=crab.x-this.x
+            this.directionY=crab.y-this.y
+            this.normalize();
+        }
+        
     }
 
     move(){
@@ -21,8 +24,12 @@ class Seagull{
     }
 
     normalize(){
-        let norm = Math.sqrt(this.directionX**2+this.directionY**2)
+        let norm = this.norm(directionX,directionY);
         this.directionX/=norm;
         this.directionY/=norm;
+    }
+
+    computeNorm(x,y){
+        return Math.sqrt(this.x**2+this.y**2)
     }
 }
