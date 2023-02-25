@@ -5,6 +5,7 @@ let canvas, context, height, width;
 let state = 1 ; 
 let crabSize;
 let zoneSize, zones ; 
+let seagullTime, seagullSound, seagull, seagullSize;
 let clothings, hats, shoes, glasses ; 
 let keys = {};
 let rockCoords = [];
@@ -13,10 +14,6 @@ let crabList = [];
 let hitbox = 0.8;
 let totalSeconds=0;
 
-let seagullTime;
-let seagullSound;
-let seagull;
-let seagullSize;
 
 const crabImage = new Image();
 const rockImage = new Image();
@@ -207,7 +204,6 @@ function seagullActivity(){
     }
 
     if (seagullTime+2==totalSeconds){
-
         seagull.hunt(crabList);
         seagull.move();
     }
