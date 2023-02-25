@@ -1,9 +1,9 @@
 class Crab{
-    constructor(id, x, y){
+    constructor(id, x, y, image){
         this.id=id
         this.x=x;
         this.y=y;
-        this.image;
+        this.image = image;
         this.hat=-1;
         this.shoes=-1;
         this.glasses=-1;
