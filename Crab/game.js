@@ -372,6 +372,6 @@ function drawCrabs(){
 
 function drawSeagull(){
     if (seagull.hunting){
-        context.drawImage(seagull.image, seagull.x, seagull.y, seagullSize, seagullSize);
+      //  context.drawImage(seagull.image, seagull.x, seagull.y, seagullSize, seagullSize);
     }
 }
