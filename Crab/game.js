@@ -5,7 +5,7 @@ let canvas, context, height, width;
 let state = 1 ; 
 let crabSize, crab1, crab2;
 let zoneSize, zones ; 
-let clothings, hats, shooes, glasses ; 
+let clothings, hats, shoes, glasses ; 
 let keys = {};
 let rockCoords = [];
 let rockList = [];
@@ -16,10 +16,10 @@ const crabImage = new Image();
 const rockImage = new Image();
 const hat1 = new Image();
 const hat2 = new Image();
-const shooes11 = new Image();
-const shooes12 = new Image();
-const shooes21 = new Image();
-const shooes22 = new Image();
+const shoes11 = new Image();
+const shoes12 = new Image();
+const shoes21 = new Image();
+const shoes22 = new Image();
 const glasses1 = new Image();
 const glasses2 = new Image();
 
@@ -39,10 +39,10 @@ function init() {
     crabImage.src = 'img/crab.png';
     hat1.src = 'img/hat.png';
     hat2.src = 'img/hat.png';
-    shooes11.src = 'img/hat.png';
-    shooes11.src = 'img/hat.png';
-    shooes21.src = 'img/hat.png';
-    shooes22.src = 'img/hat.png';
+    shoes11.src = 'img/hat.png';
+    shoes11.src = 'img/hat.png';
+    shoes21.src = 'img/hat.png';
+    shoes22.src = 'img/hat.png';
     glasses1.src = 'img/hat.png';
     glasses2.src = 'img/hat.png';
 
@@ -54,8 +54,8 @@ function init() {
             new Clothing(20, hat2, hat2)
         ], 
         [
-            new Clothing(30, shooes11, shooes12),
-            new Clothing(30, shooes21, shooes22)
+            new Clothing(30, shoes11, shoes12),
+            new Clothing(30, shoes21, shoes22)
         ], 
         [
             new Clothing(10, glasses1, glasses1),
@@ -78,7 +78,7 @@ function init() {
     })
 
     // Zones
-    zoneSize=  100 ; 
+    zoneSize= height/10 ; 
     zones = [
         new Zone(3*width-width/5,height-height/2, zoneSize, zoneSize, (random(0,3)-1), random(0,1)),
         new Zone(width-width/5, height-4*height/5, zoneSize, zoneSize, (random(0,3)-1), random(0,1)),
@@ -90,6 +90,7 @@ function init() {
 
     // Time
     setInterval(()=>{totalSeconds++;},1000)
+    setInterval(()=>{addNewClothings();},15000)
     //let seagull = new Audio('sons/sniper.wav');
     let timeSeagull = getTimeOfNextSeagull(totalSeconds);
 
@@ -120,12 +121,11 @@ switch(state){
 
     case 1 : // game 
         key(); 
-       // crab1.move();
-       // crab2.move();
-        is_in_zone(); 
-        collision(crab1);
-        collision(crab2);
-        
+        crab1.move();
+        crab2.move();
+        isInZone(crab1); 
+       // collision(crab1);
+      //  collision(crab2);
 
     break ;
 
@@ -149,7 +149,7 @@ function draw(){
     break ; 
 
     case 1 : // game 
-    draw_zone(); 
+    drawZone(); 
 
     context.drawImage(crab1.image, crab1.x, crab1.y, crabSize, crabSize);
     context.drawImage(crab2.image, crab2.x, crab2.y, crabSize, crabSize);
@@ -179,21 +179,23 @@ function getTimeOfNextSeagull(seconds){
     return Math.random(10)+5+seconds;
 }
 
-
-function draw_zone(){
-    for (let i in zones){
-        if(zones[i].object>-1){
-            context.drawImage(clothings[zones[i].object][zones[i].type].active_image, zones[i].x, zones[i].y, zones[i].width, zones[i].height);
-        }
-    }
-}
-
-function is_in_zone(){
-    
-}
-
 function random(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function addNewClothings(){
+    zones.forEach((zone) =>{
+        zone.object = random(0,3)-1; 
+        zone.type = random(0,1); 
+    })
+}
+
+function drawZone(){
+    zones.forEach((zone) =>{
+        if(zone.object>-1){
+            context.drawImage(clothings[zone.object][zone.type].active_image, zone.x, zone.y, zone.width, zone.height);
+        }
+    })
 }
 
 function key(){
@@ -225,6 +227,37 @@ function key(){
             }  
         }
     } 
+}
+
+function isInZone(crab){
+    zones.forEach((zone) =>{
+        if (zone.x <= crab.x + crabSize && 
+            zone.x + zone.width >= crab.x  &&
+            zone.y <= crab.y + crabSize &&
+            zone.y + zone.height >= crab.y)
+        {
+            switch (zone.object){
+                case 0 :
+                    if (crab.hat == -1){
+                        crab.hat = zone.type ; 
+                        zone.object = -1 ;
+                    }  
+                    break;
+                case 1 :
+                    if (crab.shoes == -1){ 
+                        crab.shoes = zone.type ; 
+                        zone.object = -1 ; 
+                    }
+                    break;
+                case 2 :
+                    if (crab.glasses == -1){
+                         crab.glasses = zone.type ; 
+                        zone.object = -1 ; 
+                    }
+                    break;
+            }
+        }
+    })
 }
 
 function collision(crab){
