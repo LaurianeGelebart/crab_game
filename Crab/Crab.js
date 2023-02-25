@@ -1,16 +1,22 @@
 class Crab{
-    constructor(id, x, y, image){
+    constructor(id, x, y, width, height, image, image2){
         this.id=id
         this.x=x;
         this.y=y;
         this.image = image;
+        this.image2 = image2;
         this.hat=-1;
         this.shoes=-1;
-        this.glasses=0;
+        this.glasses=-1;
+        this.hand=-1;
         this.speedX=0;
         this.speedY=0;
         this.hidden=0;
         this.won=0;
+        this.width=width;
+        this.height=height;
+        this.itemGathering = []
+        this.gathering = false;
     }
 
     move(){
