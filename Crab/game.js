@@ -19,7 +19,7 @@ let hitbox = 0.8;
 let cooldown = 100;
 let totalSeconds = 1;
 let gatheringTime = 750;
-let play_button, how_button;
+let play_button, how_button, endButton;
 let animationSize = 1;
 let buttonsSet, homeButton, choiceButton, goalButton, pauseButton;
 let mouseX = 0, mouseY = 0, clickX = -1, clickY = -1;
@@ -129,6 +129,8 @@ const bot = new Image();
 const bot2 = new Image();
 const ok1 = new Image();
 const ok2 = new Image();
+const home = new Image();
+const replay = new Image();
 
 const klarence = new Image();
 const kapucine = new Image();
@@ -244,6 +246,8 @@ function init() {
     bot2.src = 'img/playBotOK.png';
     ok1.src = 'img/pret.png';
     ok2.src = 'img/okPret.png';
+    replay.src = 'img/rejouer.png';
+    home.src = 'img/accueil.png';
 
     klarence.src = 'img/klarence.png';
     kapucine.src = 'img/kapucine.png';
@@ -408,6 +412,11 @@ function init() {
         new Button(0.1*width, 0.3* height, 0.05*width, 0.1*height,playB,1)
     ]
 
+    endButton = [
+      //  new Button(0.3*width, 0.8* height, 0.18*width, 0.11*height,replay,1),
+        new Button(0.1*width, 0.8* height, 0.18*width, 0.11*height,home,0)
+    ]
+
 
 
 
@@ -474,11 +483,22 @@ function gameLoop(timeStamp) {
             winningCondition();
             break;
 
-        case 2: // end of the game 
+        case 2: // end of the game
+            endButton.forEach((button) => { 
+                if(mouseX > button.x && mouseX < button.x+button.width && mouseY > button.y && mouseY < button.y+button.height) {
+                    button.hover();   
+                }else {
+                    button.reset();  
+                } 
+                if(clickX > button.x && clickX < button.x+button.width && clickY > button.y && clickY < button.y+button.height) {
+                    state = button.go ; 
+                    menuState = 0 ; 
+                }
+            })
+
             break;
         
-        case 3: // PAUSE 
-            break;
+
     }
 
     draw();
@@ -495,8 +515,6 @@ function draw() {
             break ; 
 
         case 1:
-            
-    
             drawBackground();
             drawZone();
             drawCrabs();
@@ -512,8 +530,6 @@ function draw() {
             drawVictoryScreen();
             break;
         
-        case 3: // PAUSE 
-            break;
     }
 }
 
@@ -961,12 +977,10 @@ function drawVictoryScreen() {
     else {
         context.drawImage(bothWin,0,0,width,height);
     }
+    endButton.forEach((button) => { 
+        context.drawImage(button.image, button.x, button.y, button.width, button.height);  
+    });  
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> lauriane_works6
-
 
 function drawBackground() {
     context.drawImage(background, 0, 0, width, height);
