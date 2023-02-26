@@ -28,7 +28,6 @@ let crab1Choice = 1, crab2Choice = 0;
 
 let maxScore;
 let winners = [];
-let winningMsg = "";
 
 let iter = 0;
 
@@ -135,6 +134,10 @@ const klarence = new Image();
 const kapucine = new Image();
 const karlos = new Image();
 
+let lose = new Image();
+let win = new Image();
+let bothWin = new Image();
+
 tabCrabImage = [klarence,kapucine,karlos]; 
 tabCrabCoupleImages = [
     [crabImage11, crabImage12], 
@@ -152,6 +155,7 @@ function init() {
     context = canvas.getContext('2d');
     context.canvas.width = window.innerWidth;
     context.canvas.height = window.innerHeight;
+    context.font = '60px crab';
     width = canvas.width;
     height = canvas.height;
 
@@ -241,6 +245,10 @@ function init() {
     klarence.src = 'img/klarence.png';
     kapucine.src = 'img/kapucine.png';
     karlos.src = 'img/karlos.png';
+
+    lose.src = 'img/lose.png';
+    win.src = 'img/win.png';
+    bothWin.src = 'img/draw.png';
 
     crab1 = tabCrabImage[crab1Choice] ; 
     crab2 = tabCrabImage[crab2Choice] ; 
@@ -442,6 +450,10 @@ function gameLoop(timeStamp) {
             crabMovement();
             seagullActivity();
             winningCondition();
+            crabList[0].hat=0;
+            crabList[0].glasses=0;
+            crabList[0].shoes=0;
+            crabList[0].hand=0;
             break;
 
         case 2: // end of the game 
@@ -801,7 +813,6 @@ function winningCondition() {
 }
 
 function drawTimer() {
-    context.font = '60px Crab';
     if (totalSeconds % 60 > 50)
         context.fillText("0" + (60 - totalSeconds % 60), 20, 55);
     else
@@ -894,24 +905,39 @@ function drawSeagull() {
         }
     }
 }
+function drawWinnerCrab(crab){
+    let posX = width*0.52;
+    let posY = height*0.5;
+    let sizeX = width*0.3;
+    let sizeY = height*0.4;
+    context.drawImage(crab.image, posX, posY, sizeX, sizeY);
+    if (crab.hat != -1) {
+        context.drawImage(clothings[0][crab.hat].active_image, posX, posY, sizeX, sizeY);
+    }
+    if (crab.shoes != -1) {
+        context.drawImage(clothings[1][crab.shoes].active_image, posX, posY, sizeX, sizeY);
+    }
+    if (crab.glasses != -1) {
+        context.drawImage(clothings[2][crab.glasses].active_image, posX, posY, sizeX, sizeY);
+    }
+    if (crab.hand != -1) {
+        context.drawImage(clothings[3][crab.hand].active_image, posX, posY, sizeX, sizeY);
+    }
+}
+
 
 function drawVictoryScreen() {
     if (winners.length == 0) {
-        winningMsg = "Tout le monde est mort, personne n'est kool sur cette plage...";
-    } else if (winners.length == 1)
-        winningMsg = "Le crabe " + winners[0].id + " gagne avec " + pointsCalc(winners[0]) + " points !";
+        context.drawImage(lose,0,0,width,height);
+    } else if (winners.length == 1){
+        context.drawImage(win,0,0,width,height);
+        drawWinnerCrab(winners[0]);
+        context.fillText("Karlos",0.5*width, 0.4*height);
+    }
     else {
-        winningMsg = "Les crabes ";
-        winners.forEach((winner) => {
-            winningMsg += winner.id + ", ";
-        });
-        winningMsg = winningMsg.substring(0, winningMsg.length - 2);
-        winningMsg += " gagnent avec " + pointsCalc(winners[0]) + " points !";
+        context.drawImage(bothWin,0,0,width,height);
     }
 
-    context.font = '60px Crab';
-    context.fillText(winningMsg, 20, 55);
-}
 
 function drawBackground() {
     context.drawImage(background, 0, 0, width, height);
