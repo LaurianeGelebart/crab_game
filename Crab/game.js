@@ -2,16 +2,18 @@
 
 /* ---------------------- VARIABLES & IMAGES & CLASS ---------------------- */
 let canvas, context, height, width;
-let state = 1 ;
+let state = 0 ;
 let zoneSize, zones ; 
 let seagullTime, seagullSound, seagull;
-let clothings, hats, shoes, glasses ; 
+let clothings ; 
 let keys = {};
 let rockCoords = [];
 let rockList = [];
 let crabList = [];
 let hitbox = 0.8;
 let totalSeconds=1;
+let play_button, how_button;
+let mouseX = 0, mouseY = 0;
 
 let maxScore;
 let winners = [];
@@ -53,6 +55,18 @@ const hand2Preview = new Image();
 
 const loadingRectangle = new Image();
 const loadingRectangleFill = new Image();
+
+const beginning = new Image();
+const quick = new Image();
+const goal = new Image();
+const fight = new Image();
+const danger = new Image();
+const choice = new Image();
+const pause = new Image();
+
+const playB = new Image();
+const howB = new Image();
+
 
 
 
@@ -101,6 +115,17 @@ function init() {
 
     loadingRectangle.src = 'img/loadingRectangle.png';
     loadingRectangleFill.src = 'img/loadingRectangleFill.png';
+
+    choice.src = 'img/choice.png';
+    quick.src = 'img/vite.png';
+    beginning.src = 'img/home.png';
+    danger.src = 'img/attention.png';
+    fight.src = 'img/attaquer.png';
+    goal.src = 'img/objectif.png';
+
+    playB.src = 'img/jouer.png';
+    howB.src = 'img/comment.png';
+
 
     // Clothings
     clothings = [
@@ -164,6 +189,10 @@ function init() {
     
     seagull = new Seagull(width/10, height/10,seagullImage);
 
+    // Button 
+    play_button = new Button(0.6*width, 0.45*height, 0.25*width, 0.15*height, playB); 
+    how_button = new Button(0.62*width, 0.65*height, 0.21*width, 0.15*height, howB); 
+
 
 
 /* ----------------- EVENT ---------------- */
@@ -173,8 +202,11 @@ canvas.addEventListener('keydown', (evt) => {
 
 canvas.addEventListener('keyup', (evt) => {
     keys[evt.key] = false;
- 
 })
+
+canvas.addEventListener("mousemove", setMousePosition, false);
+
+
 /* ---------------------------------------- */
 
     window.requestAnimationFrame(gameLoop); // start the first frame request
@@ -185,7 +217,7 @@ function gameLoop(timeStamp){
 
 switch(state){
     default : // beginning of the game (-> case 0)
-        
+        buttonsPlay(); 
     break ; 
 
     case 1 : // game 
@@ -217,7 +249,9 @@ function draw(){
 
  switch(state){
     default : // beginning of the game (-> case 0)
-        // context.drawImage(beginning, 0, 0);
+         context.drawImage(beginning, 0, 0, width, height);
+         context.drawImage(play_button.image, play_button.x, play_button.y, play_button.width, play_button.height);
+         context.drawImage(how_button.image, how_button.x, how_button.y, how_button.width, how_button.height);
     break ; 
 
     case 1 : // game 
@@ -582,4 +616,30 @@ function drawVictoryScreen(){
 
 function drawBackground(){
     context.drawImage(background, 0, 0, width, height);
+}
+
+function setMousePosition(e) {
+    mouseX = e.clientX ;
+    mouseY = e.clientY ;
+}
+
+function buttonsPlay(){  
+    if(mouseX > play_button.x && mouseX < play_button.x+play_button.width && mouseY > play_button.y && mouseY < play_button.y+play_button.height) {
+        play_button.x = play_button.baseX-0.01*width ; 
+        play_button.y = play_button.baseY-0.01*height ; 
+        play_button.width = play_button.baseWidth*1.1 ; 
+        play_button.height = play_button.baseHeight*1.1 ;  
+    } 
+    else {
+        play_button.reset();  
+    } 
+    if(mouseX > how_button.x && mouseX < how_button.x+how_button.width && mouseY > how_button.y && mouseY < how_button.y+how_button.height) {
+        how_button.x = how_button.baseX-0.01*width ; 
+        how_button.y = how_button.baseY-0.01*height ; 
+        how_button.width = how_button.baseWidth*1.1 ; 
+        how_button.height = how_button.baseHeight*1.1 ;  
+    } 
+    else {
+        how_button.reset();  
+    } 
 }
