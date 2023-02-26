@@ -1,5 +1,5 @@
 class Rock{
-    constructor(x, y, height, width, image, hitbox){
+    constructor(x, y, width, height, image, hitbox){
         this.x = x;
         this.y = y;
         this.height = height;

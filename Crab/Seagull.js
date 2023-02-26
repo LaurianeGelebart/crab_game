@@ -1,6 +1,6 @@
 class Seagull{
     constructor(width,height,image){
-        this.x = 0;
+        this.x = -width;
         this.y = 0;
         this.width=width;
         this.height = height;

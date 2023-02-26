@@ -2,18 +2,22 @@
 
 /* ---------------------- VARIABLES & IMAGES & CLASS ---------------------- */
 let canvas, context, height, width;
-let state = 0 ;
-let zoneSize, zones ; 
+let state = 1 ;
+let background, mapSelection;
+let zoneSize, zones, zones1, zones2 ; 
 let seagullTime, seagullSound, seagull;
 let clothings ; 
 let keys = {};
 let rockCoords = [];
-let rockList = [];
+let rockList, rockList1, rockList2;
 let crabList = [];
+let crabSound, musicMenu, musicGame, splash0, splash1, splash2, splash3, splash4;
+let splashList = [splash1, splash2, splash3, splash4];
 let hitbox = 0.8;
+let cooldown = 100;
 let totalSeconds = 1;
 let gatheringTime = 2000;
-let animationSize = 2;
+let animationSize = 1;
 let play_button, how_button;
 let mouseX = 0, mouseY = 0;
 
@@ -23,13 +27,20 @@ let winningMsg = "";
 
 let iter = 0;
 
-const background = new Image();
+const background1 = new Image();
+const background2 = new Image();
 
 const crabImage11 = new Image();
 const crabImage12 = new Image();
 const crabImage21 = new Image();
 const crabImage22 = new Image();
-const rockImage = new Image();
+
+const rockImage11 = new Image();
+const rockImage12 = new Image();
+const rockImage13 = new Image();
+const rockImage21 = new Image();
+const rockImage22 = new Image();
+
 const seagullImage = new Image();
 
 
@@ -103,9 +114,23 @@ function init() {
     width = canvas.width;
     height = canvas.height;
 
-    background.src = 'img/background2.png';
+    
+    mapSelection = random(0,1);
 
-    rockImage.src = 'img/rock.png';
+    
+        background1.src = 'img/background1.png';
+    
+        background2.src = 'img/background2.png';
+    if(mapSelection==0)
+        background = background1;
+    else
+        background = background2;
+    rockImage11.src = 'img/rock11.png';
+    rockImage12.src = 'img/rock12.png';
+    rockImage13.src = 'img/rock13.png';
+    rockImage22.src = 'img/rock22.png';
+    rockImage21.src = 'img/rock21.png';
+    
     crabImage11.src = 'img/crab11.png';
     crabImage12.src = 'img/crab12.png';
     crabImage21.src = 'img/crab21.png';
@@ -152,7 +177,17 @@ function init() {
     playB.src = 'img/jouer.png';
     howB.src = 'img/comment.png';
 
+    for(let i in splashList){
+        splashList[i] = new Audio();
+        splashList[i].src = 'sound/splash'+i+'.wav';
+        splashList[i].volume=0.2;
+    }
 
+
+    musicGame = new Audio('sound/musique.wav');
+    musicGame.volume=0.6;
+    musicMenu = new Audio('sound/menu.wav');
+    musicMenu.volume=0.05;
     // Clothings
     clothings = [
         [
@@ -173,6 +208,8 @@ function init() {
         ]
     ];
 
+
+
     // Crabs
     crabList = [
         new Crab(1, height / 5, height / 5, 0.08 * width, 0.1 * height, crabImage11, crabImage12),
@@ -180,29 +217,49 @@ function init() {
         //new CrabBot(3, 0.75*width, height/5, 0.08*width, 0.1*height, crabImage11, crabImage12),
         //new CrabBot(4, 0.3*width, 0.80*height, 0.08*width, 0.1*height, crabImage11, crabImage12)
     ]
+    
+    crabSound = new Audio('sound/crabSound.wav');
+    crabSound.volume = 0.005;
 
 
 
     // Rocks
-    let rockSize = height / 10;
 
-    rockList = [
-        new Rock(height / 7, 3 * height / 5, rockSize, rockSize, rockImage, hitbox),
-        new Rock(2 * height / 3, height / 2, rockSize, rockSize, rockImage, hitbox),
-        new Rock(height / 8, height / 2, rockSize, rockSize, rockImage, hitbox),
-        new Rock(5 * height / 7, 3 * height / 4, rockSize, rockSize, rockImage, hitbox)
+    rockList1 = [
+        new Rock(0.73*width, 0.32*height, 0.1*width, 0.17*height, rockImage11, hitbox),
+        new Rock(0.2*width, 0.60*height, 0.10*width, 0.13*height, rockImage12, hitbox),
+        new Rock(0.18*width, 0.21*height, 0.12*width, 0.23*height, rockImage13, hitbox)
     ];
 
-
+    rockList2 = [
+        new Rock(0.73*width, 0.32*height, 0.1*width, 0.14*height, rockImage22, hitbox),
+        new Rock(0.2*width, 0.70*height, 0.15*width, 0.23*height, rockImage21, hitbox)
+    ];
+    if(mapSelection==0)
+        rockList=rockList1;
+    else
+        rockList=rockList2;
     // Zones
-    zoneSize = height / 10;
-    zones = [
-        new Zone(width - width / 5, height - height / 2, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(width - width / 5, height - 4 * height / 5, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(width - 4 * width / 5, height - 2 * height / 5, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(width - width / 2, height - 7 * height / 8, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+    zoneSize = 0.1*height;
+
+    zones1 = [
+        new Zone(0.05*width, 0.08*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(0.8*width, 0.13*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(0.8*width, 0.85*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(0.5*width, 0.5*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(0.4*width, 0.75*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1))
+    ];
+    zones2 = [
+        new Zone(0.1*width, 0.1*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(0.8*width, 0.13*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(0.8*width, 0.85*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
+        new Zone(width - width / 2, 0.4*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
         new Zone(width - 6 * width / 8, height - 2 * height / 3, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1))
-    ]
+    ];
+    if(mapSelection==0)
+        zones=zones1;
+    else
+        zones=zones2
 
     crabList.forEach((crab) => {
         zones.forEach(() => crab.itemGathering.push(0));
@@ -216,7 +273,7 @@ function init() {
     setInterval(() => {
         addNewClothings();
     }, 15000)
-    seagullSound = new Audio('sound/seagull.mp3');
+    seagullSound = new Audio('sound/seagull.wav');
     seagullSound.volume = 0.005;
     seagullTime = getTimeOfNextSeagull(totalSeconds);
 
@@ -233,11 +290,24 @@ function init() {
     canvas.addEventListener('keydown', (evt) => {
         keys[evt.key] = true;
         if (evt.key == "v") {
-            attack(0)
+            if(crabList[0].cooldown==0){
+                attack(0);
+                splash();
+                crabList[0].cooldown=cooldown;
+                musicGame.volume=0;
+                musicMenu.volume=0.05;
+            }
         }
         if (evt.key == "b") {
-            attack(1)
-        }
+            if(crabList[1].cooldown==0){
+                attack(1);
+                splash();
+                crabList[1].cooldown=cooldown;
+                musicGame.volume=0.6;
+                musicMenu.volume=0;
+        }   }
+        musicGame.play();
+            musicMenu.play();
     })
 
     canvas.addEventListener('keyup', (evt) => {
@@ -252,6 +322,8 @@ function init() {
 
 
 /* ---------------------------------------- */
+
+    
 
     window.requestAnimationFrame(gameLoop); // start the first frame request
 }
@@ -298,6 +370,8 @@ function draw() {
             context.drawImage(how_button.image, how_button.x, how_button.y, how_button.width, how_button.height);
             break ; 
         case 1:
+            
+    
             drawBackground();
 
             drawZone();
@@ -566,10 +640,18 @@ function crabMovement() {
                 isInZone(crab);
             })
         }
+
+        if(crab.cooldown>0){
+            crab.cooldown--;
+        }
     })
 
 }
 
+
+function splash(){
+    splashList[random(0,splashList.length-1)].cloneNode(true).play();
+}
 
 function pointsCalc(crab) {
     let sum = 0;
@@ -626,7 +708,7 @@ function winningCondition() {
 }
 
 function drawTimer() {
-    context.font = '60px serif';
+    context.font = '60px crab';
     if (totalSeconds % 60 > 50)
         context.fillText("0" + (60 - totalSeconds % 60), 20, 55);
     else
@@ -655,9 +737,9 @@ function drawCrabs() {
 
             if (crab.attackFrame >= 0){
                 context.drawImage(imageAttacks[Math.round(crab.attackFrame/8)], 
-                crab.x+(1-animationSize)*crab.width/2, 
-                crab.y+(1-animationSize)*crab.height/2, 
-                crab.width*animationSize, 
+                crab.x+(1-animationSize*2.2)*crab.width/2, 
+                crab.y+(1-animationSize+0.25)*crab.height, 
+                crab.width*animationSize*2.2, 
                 crab.height*animationSize
                 );
 
@@ -669,8 +751,13 @@ function drawCrabs() {
 
             if (iter % 25 > 12 && (Math.abs(crab.speedX) >= 0.25 || Math.abs(crab.speedY) >= 0.25)) {
                 context.drawImage(crab.image2, crab.x, crab.y, crab.width, crab.height);
+                
                 if (crab.shoes != -1) {
                     context.drawImage(clothings[1][crab.shoes].image1, crab.x, crab.y, crab.width, crab.height);
+                    
+                }
+                if(iter%25==24){
+                    crabSound.cloneNode(true).play();
                 }
             } else {
                 context.drawImage(crab.image, crab.x, crab.y, crab.width, crab.height);
@@ -678,6 +765,7 @@ function drawCrabs() {
                     context.drawImage(clothings[1][crab.shoes].image2, crab.x, crab.y, crab.width, crab.height);
                 }
             }
+
 
             if (crab.hat != -1) {
                 context.drawImage(clothings[0][crab.hat].active_image, crab.x, crab.y, crab.width, crab.height);
@@ -694,8 +782,8 @@ function drawCrabs() {
         }
         if (crab.gathering) {
             context.drawImage(loadingRectangle, crab.x, crab.y - 0.2 * crab.height, crab.width, crab.height * 0.1);
-            context.drawImage(loadingRectangleFill, crab.x + 0.01 * crab.width, crab.y - 0.2 * crab.height + 0.01 * crab.height, (crab.width - 0.02 * crab.width) * max(crab.itemGathering) / gatheringTime, crab.height * 0.1 - 0.02 * crab.height);
-            //console.log(max(crab.itemGathering))
+            context.drawImage(loadingRectangleFill, crab.x, crab.y - 0.2 * crab.height, crab.width * max(crab.itemGathering) / gatheringTime, crab.height * 0.1);
+            
         }
     })
 
@@ -706,7 +794,6 @@ function drawCrabs() {
 function drawSeagull() {
     if (seagull.state >= 0) {
         context.drawImage(seagull.image, seagull.x, seagull.y, seagull.width, seagull.height);
-        //context.drawImage(seagull.image, seagull.x, seagull.y, 50, 50);
     }
 }
 
@@ -724,7 +811,7 @@ function drawVictoryScreen() {
         winningMsg += " gagnent avec " + pointsCalc(winners[0]) + " points !";
     }
 
-    context.font = '60px serif';
+    context.font = '60px crab';
     context.fillText(winningMsg, 20, 55);
 }
 
