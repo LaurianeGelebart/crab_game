@@ -240,7 +240,7 @@ function init() {
     bot.src = 'img/playBot.png';
     bot2.src = 'img/playBotOK.png';
     ok1.src = 'img/pret.png';
-    ok2.src = 'img/pretOk.png';
+    ok2.src = 'img/okPret.png';
 
     klarence.src = 'img/klarence.png';
     kapucine.src = 'img/kapucine.png';
@@ -937,6 +937,8 @@ function drawVictoryScreen() {
     else {
         context.drawImage(bothWin,0,0,width,height);
     }
+}
+
 
 
 function drawBackground() {
