@@ -2,12 +2,13 @@
 
 /* ---------------------- VARIABLES & IMAGES & CLASS ---------------------- */
 let canvas, context, height, width;
-let state = 1 ;
-let background, mapSelection;
+let state = 0, menuState = 0 ;
+let mapSelection;
 let zoneSize, zones, zones1, zones2 ; 
 let seagullTime, seagullSound, seagull;
 let clothings ; 
 let keys = {};
+let tabCrabImage ; 
 let rockCoords = [];
 let rockList, rockList1, rockList2;
 let crabList = [];
@@ -17,9 +18,12 @@ let hitbox = 0.8;
 let cooldown = 100;
 let totalSeconds = 1;
 let gatheringTime = 2000;
-let animationSize = 1;
 let play_button, how_button;
-let mouseX = 0, mouseY = 0;
+let animationSize = 1;
+let buttonsSet, homeButton, choiceButton, goalButton;
+let mouseX = 0, mouseY = 0, clickX = -1, clickY = -1;
+let pret1=false, pret2=false, botChoice=false; 
+let crab1Choice = 1, crab2Choice = 0; 
 
 let maxScore;
 let winners = [];
@@ -29,6 +33,8 @@ let iter = 0;
 
 const background1 = new Image();
 const background2 = new Image();
+let crab1 = new Image();
+let crab2 = new Image();
 
 const crabImage11 = new Image();
 const crabImage12 = new Image();
@@ -89,6 +95,10 @@ const imageAttacks = [
     imageAttack8
 ]
 
+// background
+let background = new Image();
+let backgroundG1 = new Image();
+let backgroundG2 = new Image();
 const beginning = new Image();
 const quick = new Image();
 const goal = new Image();
@@ -96,10 +106,22 @@ const fight = new Image();
 const danger = new Image();
 const choice = new Image();
 const pause = new Image();
+const playWithBot = new Image();
 
 const playB = new Image();
 const howB = new Image();
+const arrowL = new Image();
+const arrowR = new Image();
+const bot = new Image();
+const bot2 = new Image();
+const ok1 = new Image();
+const ok2 = new Image();
 
+const klarence = new Image();
+const kapucine = new Image();
+const karlos = new Image();
+
+tabCrabImage = [klarence,kapucine,karlos]; 
 
 
 
@@ -115,16 +137,13 @@ function init() {
     height = canvas.height;
 
     
-    mapSelection = random(0,1);
-
-    
-        background1.src = 'img/background1.png';
-    
-        background2.src = 'img/background2.png';
+    background1.src = 'img/background1.png';
+    background2.src = 'img/background2.png';
     if(mapSelection==0)
         background = background1;
     else
         background = background2;
+
     rockImage11.src = 'img/rock11.png';
     rockImage12.src = 'img/rock12.png';
     rockImage13.src = 'img/rock13.png';
@@ -173,9 +192,26 @@ function init() {
     danger.src = 'img/attention.png';
     fight.src = 'img/attaquer.png';
     goal.src = 'img/objectif.png';
+    playWithBot.src = 'img/botBack.png';
+    pause.src = 'img/pause.png';
 
     playB.src = 'img/jouer.png';
     howB.src = 'img/comment.png';
+    arrowR.src = 'img/arrowR.png';
+    arrowL.src = 'img/arrowL.png';
+    arrowR.src = 'img/arrowR.png';
+    bot.src = 'img/playBot.png';
+    bot2.src = 'img/playBotOK.png';
+    ok1.src = 'img/pret.png';
+    ok2.src = 'img/pretOk.png';
+
+    klarence.src = 'img/klarence.png';
+    kapucine.src = 'img/kapucine.png';
+    karlos.src = 'img/karlos.png';
+
+    crab1 = tabCrabImage[crab1Choice] ; 
+    crab2 = tabCrabImage[crab2Choice] ; 
+
 
     for(let i in splashList){
         splashList[i] = new Audio();
@@ -221,10 +257,7 @@ function init() {
     crabSound = new Audio('sound/crabSound.wav');
     crabSound.volume = 0.005;
 
-
-
     // Rocks
-
     rockList1 = [
         new Rock(0.73*width, 0.32*height, 0.1*width, 0.17*height, rockImage11, hitbox),
         new Rock(0.2*width, 0.60*height, 0.10*width, 0.13*height, rockImage12, hitbox),
@@ -235,10 +268,12 @@ function init() {
         new Rock(0.73*width, 0.32*height, 0.1*width, 0.14*height, rockImage22, hitbox),
         new Rock(0.2*width, 0.70*height, 0.15*width, 0.23*height, rockImage21, hitbox)
     ];
-    if(mapSelection==0)
-        rockList=rockList1;
-    else
-        rockList=rockList2;
+
+
+    if(mapSelection==0) rockList=rockList1;
+    else rockList=rockList2;
+
+
     // Zones
     zoneSize = 0.1*height;
 
@@ -280,8 +315,24 @@ function init() {
     seagull = new Seagull(width / 10, height / 10, seagullImage);
 
     // Button 
-    play_button = new Button(0.6*width, 0.45*height, 0.25*width, 0.15*height, playB); 
-    how_button = new Button(0.62*width, 0.65*height, 0.21*width, 0.15*height, howB); 
+    homeButton = [
+        new Button(0.6*width, 0.45*height, 0.25*width, 0.15*height, playB, 1), 
+        new Button(0.62*width, 0.65*height, 0.21*width, 0.15*height, howB, 2)
+    ]
+    goalButton = [
+        new Button(0.05*width, 0.42*height, 0.05*width, 0.1*height, arrowL, -1), 
+        new Button(0.9*width, 0.42*height, 0.05*width, 0.1*height, arrowR, -2)
+    ]
+    choiceButton = [
+        new Button(0.05*width, 0.42*height, 0.05*width, 0.1*height, arrowL, -1), 
+        new Button(0.25*width, 0.5*height, 0.025*width, 0.05*height, arrowL, -6), 
+        new Button(0.4*width, 0.5*height, 0.025*width, 0.05*height, arrowR, -7), 
+        new Button(0.57*width, 0.5*height, 0.025*width, 0.05*height, arrowL, -8), 
+        new Button(0.72*width, 0.5*height, 0.025*width, 0.05*height, arrowR, -9), 
+        new Button(0.64*width, 0.8*height, 0.15*width, 0.1*height, bot, -3), 
+        new Button(0.29*width, 0.8*height, 0.09*width, 0.1*height, ok1, -4),
+        new Button(0.53*width, 0.8*height, 0.09*width, 0.1*height, ok1, -5)
+    ]
 
 
 
@@ -316,16 +367,12 @@ function init() {
 
     canvas.addEventListener("mousemove", setMousePosition, false);
 
+    canvas.addEventListener('click', setClickPosition, false); 
     /* ---------------------------------------- */
 
 
-
-
-/* ---------------------------------------- */
-
-    
-
     window.requestAnimationFrame(gameLoop); // start the first frame request
+
 }
 
 /* ----------------------------- GAME LOOP ----------------------------- */
@@ -334,26 +381,25 @@ function gameLoop(timeStamp) {
     switch(state){
         default : // beginning of the game (-> case 0)
             buttonsPlay(); 
+            buttonsHover(); 
+            buttonsClick(); 
+            if (menuState == 1) goGame() ; 
         break ; 
 
         case 1: // game 
             iter++;
-
             key();
-
             crabMovement();
-
             //seagullActivity();
-
             winningCondition();
-
             break;
 
         case 2: // end of the game 
-
+            break;
+        
+        case 3: // PAUSE 
             break;
     }
-
 
     draw();
     window.requestAnimationFrame(gameLoop); // keep requesting new frames
@@ -365,44 +411,36 @@ function draw() {
 
     switch(state){
         default : // beginning of the game (-> case 0)
-            context.drawImage(beginning, 0, 0, width, height);
-            context.drawImage(play_button.image, play_button.x, play_button.y, play_button.width, play_button.height);
-            context.drawImage(how_button.image, how_button.x, how_button.y, how_button.width, how_button.height);
+            drawPlay();
             break ; 
+
         case 1:
             
     
             drawBackground();
-
             drawZone();
-
             drawCrabs();
-
             drawRocks();
-
             drawSeagull();
-
             drawTimer();
-
-
             break;
-        case 2: // end of the game 
 
+        case 2: // end of the game 
             drawBackground();
             drawVictoryScreen();
-
+            break;
+        
+        case 3: // PAUSE 
             break;
     }
-
 }
+
 
 /* ----------------------------- OTHERS FUNCTIONS ----------------------------- */
 
 function getTimeOfNextSeagull(seconds) {
     return seconds + random(5, 10);
 }
-
-
 
 function addNewClothings() {
     zones.forEach((zone) => {
@@ -419,7 +457,6 @@ function seagullActivity() {
             }
         })
         seagullSound.play();
-
     }
 
     if (seagullTime + random(2, 4) == totalSeconds && seagull.state == 0) {
@@ -819,28 +856,162 @@ function drawBackground() {
     context.drawImage(background, 0, 0, width, height);
 }
 
-function setMousePosition(e) {
-    mouseX = e.clientX ;
-    mouseY = e.clientY ;
+function setMousePosition(evt) {
+    mouseX = evt.clientX ;
+    mouseY = evt.clientY ;
 }
 
-function buttonsPlay(){  
-    if(mouseX > play_button.x && mouseX < play_button.x+play_button.width && mouseY > play_button.y && mouseY < play_button.y+play_button.height) {
-        play_button.x = play_button.baseX-0.01*width ; 
-        play_button.y = play_button.baseY-0.01*height ; 
-        play_button.width = play_button.baseWidth*1.1 ; 
-        play_button.height = play_button.baseHeight*1.1 ;  
-    } 
-    else {
-        play_button.reset();  
-    } 
-    if(mouseX > how_button.x && mouseX < how_button.x+how_button.width && mouseY > how_button.y && mouseY < how_button.y+how_button.height) {
-        how_button.x = how_button.baseX-0.01*width ; 
-        how_button.y = how_button.baseY-0.01*height ; 
-        how_button.width = how_button.baseWidth*1.1 ; 
-        how_button.height = how_button.baseHeight*1.1 ;  
-    } 
-    else {
-        how_button.reset();  
-    } 
+function setClickPosition(evt) {
+    clickX = evt.x ;
+    clickY = evt.y ;
+}
+
+function buttonsPlay(){
+    switch(menuState){
+        case 0 :
+            background = beginning ; 
+            buttonsSet = homeButton ; 
+            break ; 
+        case 1 :
+            if (botChoice) background = playWithBot ; 
+            else background = choice ; 
+            buttonsSet = choiceButton ; 
+            break ; 
+        case 2 :
+            background = goal ; 
+            buttonsSet = goalButton ; 
+            break ;
+        case 3 :
+            background = danger ; 
+            buttonsSet = goalButton ; 
+            break ; 
+        case 4 :
+            background = fight ; 
+            buttonsSet = goalButton ; 
+            break ; 
+        case 5 :
+            background = quick ; 
+            buttonsSet = goalButton ; 
+            break 
+    }
+}
+
+function drawPlay(){
+    drawBackground(); 
+    buttonsSet.forEach((button) => { 
+        if(!(menuState == 1 && botChoice)){
+            context.drawImage(button.image, button.x, button.y, button.width, button.height);  
+        }else if (!(button.go == -9 || button.go == -8)){
+            context.drawImage(button.image, button.x, button.y, button.width, button.height);
+        }
+    });  
+    if (menuState==1) drawCrabChoice() ; 
+}
+
+function buttonsHover(){
+    buttonsSet.forEach((button) => { 
+        if(mouseX > button.x && mouseX < button.x+button.width && mouseY > button.y && mouseY < button.y+button.height) {
+            if(!(menuState == 1 && botChoice)){
+                button.hover();   
+            }else if (!(button.go == -5 || button.go == -3)){
+                button.hover(); 
+            }
+        } 
+        else {
+            button.reset();  
+        } 
+    })
+}
+
+function buttonsClick(){
+    buttonsSet.forEach((button) => { 
+        if(clickX > button.x && clickX < button.x+button.width && clickY > button.y && clickY < button.y+button.height) {
+            if(!(menuState == 1 && botChoice)){
+                selectAction(button);    
+            }else if (!(button.go == -5 || button.go == -3 || button.go == -9 || button.go == -8)){
+                selectAction(button); 
+            }
+        } 
+    })
+    clickX = -1 ; 
+    clickY = -1 ; 
+} 
+
+function drawCrabChoice(){
+    context.drawImage(crab1, 0.263*width, 0.31*height, 0.15*width, 0.23*height);
+    if (!botChoice) context.drawImage(crab2, 0.58*width, 0.31*height, 0.15*width, 0.23*height);
+}
+
+function goGame(){
+    if (pret1 && pret2) {
+        state = 1 ;
+        background = background1
+        
+    }
+}
+
+function selectAction(button){
+    switch(button.go){
+        case -1 : // fleche changer de page gauche 
+            if (menuState == 1){
+                botChoice = false ; 
+                crab1Choice = 1 ; 
+                crab1Choice = 2 ; 
+                pret1 = false ; 
+                pret2 = false ; 
+                choiceButton[6].image = ok1 ; 
+                choiceButton[7].image = ok1 ; 
+            }
+            if(menuState == 2) menuState = 0 ;  
+            else menuState += button.go ;
+            break ; 
+        case -2 : // fleche changer de page droite
+            if(menuState == 5) menuState = 0 ;  
+             else menuState += 1 ; 
+            break ;
+        case -3 : // jouer contre le bot
+            botChoice = !botChoice ;
+            if (botChoice) {
+                background = playWithBot ; 
+                pret2 = true; 
+                choiceButton[7].image = ok2 ; 
+                choiceButton[5].image = bot2 ; 
+            }
+            else {
+                pret2 = false; 
+                background = choice ;
+                choiceButton[5].image = bot ; 
+                choiceButton[7].image = ok1 ; 
+            }
+            break ;
+        case -4 : // crab1 prêt
+            pret1 = !pret1; 
+            if (pret1) button.image = ok2 ;
+            else button.image = ok1 ; 
+            break ;
+        case -5 :  // crab2 prêt
+            pret2 = !pret2; 
+            if (pret2) button.image = ok2 ;
+            else button.image = ok1 ; 
+            break ;
+        case -6 :  // fleche changer crab1 gauche
+            crab1Choice = mod((crab1Choice-1),3) ;
+            crab1 = tabCrabImage[crab1Choice]; 
+            break ;
+        case -7 :  // fleche changer crab1 droite 
+            crab1Choice = mod((crab2Choice+1),3) ; 
+            crab1 = tabCrabImage[crab1Choice]; 
+            break ;
+        case -8 :  // fleche changer crab2 gauche
+            crab2Choice = mod((crab2Choice-1),3) ; 
+            crab2 = tabCrabImage[crab2Choice]; 
+            break ;
+        case -9 :  // fleche changer crab2 droite 
+            crab2Choice = mod((crab2Choice+1),3) ; 
+            crab2 = tabCrabImage[crab2Choice]; 
+            break ;
+        default: // aller à la page
+             menuState = button.go ; 
+             break ; 
+        } 
 }
