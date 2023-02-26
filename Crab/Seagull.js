@@ -1,9 +1,9 @@
 class Seagull{
-    constructor(width,heigth,image){
+    constructor(width,height,image){
         this.x = 0;
         this.y = 0;
         this.width=width;
-        this.heigth = heigth;
+        this.height = height;
         this.image = image;
         this.directionX=0;
         this.directionY=0;
@@ -12,7 +12,7 @@ class Seagull{
         
     }
 
-    spawn(width,heigth){
+    spawn(width,height){
         
         switch (random(0,1)){
             case 0 :
@@ -22,10 +22,10 @@ class Seagull{
                 this.x = width+this.width;
                 break;
         }
-        this.y = random(-this.heigth,height);
-        this.target(-this.width,random(0,heigth));
+        this.y = random(-this.height,height);
+        this.target(-this.width,random(0,height));
 
-        if(this.preys.height != 0)
+        if(this.preys.length != 0)
             this.state=2;
         else
             this.state=3;
@@ -43,7 +43,7 @@ class Seagull{
     move(){
         if(this.state==2){
             if(this.preys.length != 0){
-                this.target(this.preys[0].x + this.preys[0].width,this.preys[0].y + this.preys[0].length);
+                this.target(this.preys[0].x + this.preys[0].width,this.preys[0].y + this.preys[0].height);
             }
         }
         
@@ -56,7 +56,7 @@ class Seagull{
     eat(){
         if(this.preys.length != 0){
             let crab = this.preys[0];
-            if (rectangleCollision(seagull.x, seagull.y, seagull.size, seagull.size, crab.x, crab.y, crab.size, crab.size)){
+            if (rectangleCollision(seagull.x, seagull.y, seagull.width, seagull.height, crab.x, crab.y, crab.width, crab.height)){
                 this.state = 3;
                 return this.preys.shift();
                 
@@ -66,8 +66,8 @@ class Seagull{
     }
 
     target(x,y){
-        this.directionX = x - (this.x + seagull.size);
-        this.directionY = y - (this.y + seagull.size);
+        this.directionX = x - (this.x + this.width/2);
+        this.directionY = y - (this.y + this.height/2);
         let directions = normalize(this.directionX,this.directionY);
         this.directionX = directions[0];
         this.directionY = directions[1];

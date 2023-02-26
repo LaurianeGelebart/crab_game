@@ -18,6 +18,7 @@ class Crab{
         this.itemGathering = []
         this.gathering = false;
         this.attack = false;
+        this.attackFrame = -1;
     }
 
     move(){
