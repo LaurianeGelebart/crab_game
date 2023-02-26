@@ -8,7 +8,7 @@ let zoneSize, zones, zones1, zones2 ;
 let seagullTime, seagullSound, seagull;
 let clothings ; 
 let keys = {};
-let tabCrabImage, tabCrabCoupleImages ; 
+let tabCrabImage, tabCrabCoupleImages, tabCrabNames; 
 let rockCoords = [];
 let rockList, rockList1, rockList2;
 let crabList, crabListNoBot, crabListBot;
@@ -21,15 +21,15 @@ let totalSeconds = 1;
 let gatheringTime = 750;
 let play_button, how_button;
 let animationSize = 1;
-let buttonsSet, homeButton, choiceButton, goalButton;
+let buttonsSet, homeButton, choiceButton, goalButton, pauseButton;
 let mouseX = 0, mouseY = 0, clickX = -1, clickY = -1;
-let pret1=false, pret2=false, botChoice=false; 
-let crab1Choice = 1, crab2Choice = 0; 
+let pret1, pret2, botChoice; 
+let crab1Choice, crab2Choice; 
 
 let maxScore;
 let winners = [];
 
-let iter = 0;
+let iter;
 
 const background1 = new Image();
 const background2 = new Image();
@@ -144,6 +144,7 @@ tabCrabCoupleImages = [
     [crabImage21, crabImage22],
     [crabImage31, crabImage32]
 ]
+tabCrabNames = ['Klarence', 'Kapucine', 'Karlos'];
 
 
 
@@ -155,10 +156,12 @@ function init() {
     context = canvas.getContext('2d');
     context.canvas.width = window.innerWidth;
     context.canvas.height = window.innerHeight;
-    context.font = '60px crab';
     width = canvas.width;
     height = canvas.height;
+    
+    context.font = width/15+'px crab';
 
+    iter = 0;
     
     background1.src = 'img/background1.png';
     background2.src = 'img/background2.png';
@@ -177,8 +180,8 @@ function init() {
     crabImage12.src = 'img/crab12.png';
     crabImage21.src = 'img/crab21.png';
     crabImage22.src = 'img/crab22.png';
-    crabImage31.src = 'img/crab21.png';
-    crabImage32.src = 'img/crab22.png';
+    crabImage31.src = 'img/crab31.png';
+    crabImage32.src = 'img/crab32.png';
     seagullImage1.src = 'img/seagull1.png';
     seagullImage2.src = 'img/seagull2.png';
 
@@ -250,8 +253,15 @@ function init() {
     win.src = 'img/win.png';
     bothWin.src = 'img/draw.png';
 
+    crab1Choice = 1;
+    crab2Choice = 0; 
+
     crab1 = tabCrabImage[crab1Choice] ; 
     crab2 = tabCrabImage[crab2Choice] ; 
+
+    pret1=false; 
+    pret2=false;
+    botChoice=false;
 
 
     for(let i in splashList){
@@ -317,7 +327,7 @@ function init() {
 
     rockList2 = [
         new Rock(0.73*width, 0.32*height, 0.1*width, 0.14*height, rockImage22, hitbox),
-        new Rock(0.2*width, 0.70*height, 0.15*width, 0.23*height, rockImage21, hitbox)
+        new Rock(0.2*width, 0.75*height, 0.15*width, 0.23*height, rockImage21, hitbox)
     ];
 
 
@@ -370,6 +380,9 @@ function init() {
 
     seagull = new Seagull(width / 7, height / 7, seagullImage1, seagullImage2);
 
+
+    
+
     // Button 
     homeButton = [
         new Button(0.6*width, 0.45*height, 0.25*width, 0.15*height, playB, 1), 
@@ -388,6 +401,11 @@ function init() {
         new Button(0.64*width, 0.8*height, 0.15*width, 0.1*height, bot, -3), 
         new Button(0.29*width, 0.8*height, 0.09*width, 0.1*height, ok1, -4),
         new Button(0.53*width, 0.8*height, 0.09*width, 0.1*height, ok1, -5)
+    ]
+
+    pauseButton = [
+        new Button(0.1*width, 0.6* height, 0.05*width, 0.1*height,playB,0),
+        new Button(0.1*width, 0.3* height, 0.05*width, 0.1*height,playB,1)
     ]
 
 
@@ -410,6 +428,10 @@ function init() {
                 crabList[1].cooldown=cooldown;
                 
         }   }
+
+        if(state == 1 && evt.key == "escape"){
+            state = 0;
+        } 
     })
 
     
@@ -450,10 +472,6 @@ function gameLoop(timeStamp) {
             crabMovement();
             seagullActivity();
             winningCondition();
-            crabList[0].hat=0;
-            crabList[0].glasses=0;
-            crabList[0].shoes=0;
-            crabList[0].hand=0;
             break;
 
         case 2: // end of the game 
@@ -480,12 +498,12 @@ function draw() {
             
     
             drawBackground();
-            if(alert)
-                drawAlert();
             drawZone();
             drawCrabs();
             drawRocks();
             drawSeagull();
+            if(alert)
+                drawAlert();
             drawTimer();
             break;
 
@@ -596,7 +614,8 @@ function key() {
                 if (key == "l") {
                     crabList[1].speedX += 0.1;
                 }
-            }   
+            }
+              
         }
     }
 }
@@ -784,6 +803,9 @@ function winningCondition() {
         }
         if (crab.hat != -1 && crab.shoes != -1 && crab.glasses != -1 && crab.hand != -1) {
             crab.won = 1;
+            
+            context.font = width/7.5+'px crab';
+            context.fillStyle = "#AA323D"
             state = 2;
             winners.push(crab);
         }
@@ -791,6 +813,8 @@ function winningCondition() {
     if (nbDead >= crabList.length - 1 && seagull.preys.length == 0) {
         crabList.forEach((crab) => {
             if (crab.won != -1) {
+                context.font = width/7.5+'px crab';
+                context.fillStyle = "#AA323D"
                 crab.won = 1;
                 winners.push(crab);
             }
@@ -814,9 +838,9 @@ function winningCondition() {
 
 function drawTimer() {
     if (totalSeconds % 60 > 50)
-        context.fillText("0" + (60 - totalSeconds % 60), 20, 55);
+        context.fillText("0" + (60 - totalSeconds % 60), 0.03*width, 0.14*height);
     else
-        context.fillText((60 - totalSeconds % 60), 20, 55);
+        context.fillText((60 - totalSeconds % 60), 0.03*width, 0.14*height);
 }
 
 function drawRocks() {
@@ -932,11 +956,12 @@ function drawVictoryScreen() {
     } else if (winners.length == 1){
         context.drawImage(win,0,0,width,height);
         drawWinnerCrab(winners[0]);
-        context.fillText("Karlos",0.5*width, 0.4*height);
+        context.fillText(winners[0].name,0.2*width, 0.58*height);
     }
     else {
         context.drawImage(bothWin,0,0,width,height);
     }
+}
 
 
 function drawBackground() {
@@ -1054,11 +1079,13 @@ function goGame(){
             crabList = crabListBot;
         else    
             crabList = crabListNoBot;
-            
+
         crabList[0].image=tabCrabCoupleImages[crab1Choice][0];
         crabList[0].image2=tabCrabCoupleImages[crab1Choice][1];
+        crabList[0].name = tabCrabNames[crab1Choice];
         crabList[1].image=tabCrabCoupleImages[crab2Choice][0];
         crabList[1].image2=tabCrabCoupleImages[crab2Choice][1];
+        crabList[1].name = tabCrabNames[crab2Choice];
     }
 }
 

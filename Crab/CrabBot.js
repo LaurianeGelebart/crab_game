@@ -20,6 +20,7 @@ class CrabBot{
         this.attack = false;
         this.attackFrame = -1;
         this.alert = false;
+        this.name;
     }
 
     move(){
