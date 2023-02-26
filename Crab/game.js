@@ -8,16 +8,17 @@ let zoneSize, zones, zones1, zones2 ;
 let seagullTime, seagullSound, seagull;
 let clothings ; 
 let keys = {};
-let tabCrabImage ; 
+let tabCrabImage, tabCrabCoupleImages ; 
 let rockCoords = [];
 let rockList, rockList1, rockList2;
-let crabList = [];
+let crabList, crabListNoBot, crabListBot;
 let crabSound, musicMenu, musicGame, splash0, splash1, splash2, splash3, splash4;
 let splashList = [splash1, splash2, splash3, splash4];
+let alert = false;
 let hitbox = 0.8;
 let cooldown = 100;
 let totalSeconds = 1;
-let gatheringTime = 2000;
+let gatheringTime = 750;
 let play_button, how_button;
 let animationSize = 1;
 let buttonsSet, homeButton, choiceButton, goalButton;
@@ -40,6 +41,8 @@ const crabImage11 = new Image();
 const crabImage12 = new Image();
 const crabImage21 = new Image();
 const crabImage22 = new Image();
+const crabImage31 = new Image();
+const crabImage32 = new Image();
 
 const rockImage11 = new Image();
 const rockImage12 = new Image();
@@ -47,13 +50,16 @@ const rockImage13 = new Image();
 const rockImage21 = new Image();
 const rockImage22 = new Image();
 
-const seagullImage = new Image();
+const seagullImage1 = new Image();
+const seagullImage2 = new Image();
 
 
 const hat1 = new Image();
 const hat1Preview = new Image();
 const hat2 = new Image();
 const hat2Preview = new Image();
+const hat3 = new Image();
+const hat3Preview = new Image();
 
 const shoes1Preview = new Image();
 const shoes11 = new Image();
@@ -61,16 +67,23 @@ const shoes12 = new Image();
 const shoes2Preview = new Image();
 const shoes21 = new Image();
 const shoes22 = new Image();
+const shoes3Preview = new Image();
+const shoes31 = new Image();
+const shoes32 = new Image();
 
 const glasses1 = new Image();
 const glasses1Preview = new Image();
 const glasses2 = new Image();
 const glasses2Preview = new Image();
+const glasses3 = new Image();
+const glasses3Preview = new Image();
 
 const hand1 = new Image();
 const hand1Preview = new Image();
 const hand2 = new Image();
 const hand2Preview = new Image();
+const hand3 = new Image();
+const hand3Preview = new Image();
 
 const loadingRectangle = new Image();
 const loadingRectangleFill = new Image();
@@ -99,6 +112,7 @@ const imageAttacks = [
 let background = new Image();
 let backgroundG1 = new Image();
 let backgroundG2 = new Image();
+const alertImage = new Image();
 const beginning = new Image();
 const quick = new Image();
 const goal = new Image();
@@ -122,6 +136,11 @@ const kapucine = new Image();
 const karlos = new Image();
 
 tabCrabImage = [klarence,kapucine,karlos]; 
+tabCrabCoupleImages = [
+    [crabImage11, crabImage12], 
+    [crabImage21, crabImage22],
+    [crabImage31, crabImage32]
+]
 
 
 
@@ -153,14 +172,19 @@ function init() {
     crabImage11.src = 'img/crab11.png';
     crabImage12.src = 'img/crab12.png';
     crabImage21.src = 'img/crab21.png';
-    crabImage22.src = 'img/test22.png';
-    seagullImage.src = 'img/seagull.png';
+    crabImage22.src = 'img/crab22.png';
+    crabImage31.src = 'img/crab21.png';
+    crabImage32.src = 'img/crab22.png';
+    seagullImage1.src = 'img/seagull1.png';
+    seagullImage2.src = 'img/seagull2.png';
 
 
-    hat1.src = 'img/hat.png';
+    hat1.src = 'img/hat1.png';
     hat1Preview.src = 'img/hat1P.png';
     hat2.src = 'img/hat2.png';
     hat2Preview.src = 'img/hat2P.png';
+    hat3.src = 'img/hat3.png';
+    hat3Preview.src = 'img/hat3P.png';
 
     shoes11.src = 'img/shoes1.png';
     shoes1Preview.src = 'img/shoes1P.png';
@@ -168,16 +192,25 @@ function init() {
     shoes21.src = 'img/shoes1.png';
     shoes2Preview.src = 'img/shoes1P.png';
     shoes22.src = 'img/shoes12.png';
+    shoes31.src = 'img/shoes1.png';
+    shoes3Preview.src = 'img/shoes1P.png';
+    shoes32.src = 'img/shoes12.png';
 
     glasses1.src = 'img/glasses.png';
     glasses1Preview.src = 'img/glasses1P.png';
     glasses2.src = 'img/glasses2.png';
     glasses2Preview.src = 'img/glasses2P.png';
+    glasses3.src = 'img/glasses3.png';
+    glasses3Preview.src = 'img/glasses3P.png';
 
     hand1.src = 'img/hand1.png';
     hand1Preview.src = 'img/hand1P.png';
-    hand2.src = 'img/hand1.png';
-    hand2Preview.src = 'img/hand1P.png';
+    hand2.src = 'img/hand2.png';
+    hand2Preview.src = 'img/hand2P.png';
+    hand3.src = 'img/hand2.png';
+    hand3Preview.src = 'img/hand2P.png';
+
+    alertImage.src = 'img/alert.png';
 
     loadingRectangle.src = 'img/loadingRectangle.png';
     loadingRectangleFill.src = 'img/loadingRectangleFill.png';
@@ -221,38 +254,48 @@ function init() {
 
 
     musicGame = new Audio('sound/musique.wav');
-    musicGame.volume=0.6;
     musicMenu = new Audio('sound/menu.wav');
-    musicMenu.volume=0.05;
+    musicGame.volume=0;
+    musicGame.loop=true;
+    musicMenu.volume=0.5;
+    musicMenu.loop=true;
+
     // Clothings
     clothings = [
         [
-            new Clothing(20, hat1, hat1, hat1Preview),
-            new Clothing(20, hat2, hat2, hat2Preview)
+            new Clothing(1, hat1, hat1, hat1Preview),
+            new Clothing(1, hat2, hat2, hat2Preview),
+            new Clothing(1, hat2, hat2, hat2Preview)
         ],
         [
-            new Clothing(30, shoes11, shoes12, shoes1Preview),
-            new Clothing(30, shoes21, shoes22, shoes2Preview)
+            new Clothing(1, shoes11, shoes12, shoes1Preview),
+            new Clothing(1, shoes21, shoes22, shoes2Preview),
+            new Clothing(1, shoes21, shoes22, shoes2Preview)
         ],
         [
-            new Clothing(10, glasses1, glasses1, glasses1Preview),
-            new Clothing(10, glasses2, glasses2, glasses2Preview)
+            new Clothing(1, glasses1, glasses1, glasses1Preview),
+            new Clothing(1, glasses2, glasses2, glasses2Preview),
+            new Clothing(1, glasses3, glasses3, glasses3Preview)
         ],
         [
-            new Clothing(40, hand1, hand1, hand1Preview),
-            new Clothing(40, hand2, hand2, hand2Preview)
+            new Clothing(1, hand1, hand1, hand1Preview),
+            new Clothing(1, hand2, hand2, hand2Preview),
+            new Clothing(1, hand2, hand2, hand2Preview)
         ]
     ];
 
 
 
     // Crabs
-    crabList = [
+    crabListNoBot = [
         new Crab(1, height / 5, height / 5, 0.08 * width, 0.1 * height, crabImage11, crabImage12),
         new Crab(2, height / 5, 4 * height / 5, 0.08 * width, 0.1 * height, crabImage21, crabImage22)
-        //new CrabBot(3, 0.75*width, height/5, 0.08*width, 0.1*height, crabImage11, crabImage12),
-        //new CrabBot(4, 0.3*width, 0.80*height, 0.08*width, 0.1*height, crabImage11, crabImage12)
     ]
+    
+    crabListBot = [
+        new Crab(1, height / 5, height / 5, 0.08 * width, 0.1 * height, crabImage11, crabImage12),
+        new CrabBot(3, 0.75*width, height/5, 0.08*width, 0.1*height, crabImage11, crabImage12)
+    ];
     
     crabSound = new Audio('sound/crabSound.wav');
     crabSound.volume = 0.005;
@@ -278,28 +321,33 @@ function init() {
     zoneSize = 0.1*height;
 
     zones1 = [
-        new Zone(0.05*width, 0.08*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(0.8*width, 0.13*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(0.8*width, 0.85*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(0.5*width, 0.5*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(0.4*width, 0.75*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1))
+        new Zone(0.05*width, 0.08*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(0.8*width, 0.13*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(0.8*width, 0.85*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(0.5*width, 0.5*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(0.4*width, 0.75*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2))
     ];
     zones2 = [
-        new Zone(0.1*width, 0.1*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(0.8*width, 0.13*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(0.8*width, 0.85*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(width - width / 2, 0.4*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1)),
-        new Zone(width - 6 * width / 8, height - 2 * height / 3, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 1))
+        new Zone(0.1*width, 0.1*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(0.8*width, 0.13*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(0.8*width, 0.85*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(width - width / 2, 0.4*height, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2)),
+        new Zone(width - 6 * width / 8, height - 2 * height / 3, zoneSize, zoneSize, (random(0, 3) - 1), random(0, 2))
     ];
     if(mapSelection==0)
         zones=zones1;
     else
         zones=zones2
 
-    crabList.forEach((crab) => {
+    crabListBot.forEach((crab) => {
         zones.forEach(() => crab.itemGathering.push(0));
     });
 
+    crabListNoBot.forEach((crab) => {
+        zones.forEach(() => crab.itemGathering.push(0));
+    });
+
+    
 
     // Time
     setInterval(() => {
@@ -312,7 +360,7 @@ function init() {
     seagullSound.volume = 0.005;
     seagullTime = getTimeOfNextSeagull(totalSeconds);
 
-    seagull = new Seagull(width / 10, height / 10, seagullImage);
+    seagull = new Seagull(width / 7, height / 7, seagullImage1, seagullImage2);
 
     // Button 
     homeButton = [
@@ -345,8 +393,6 @@ function init() {
                 attack(0);
                 splash();
                 crabList[0].cooldown=cooldown;
-                musicGame.volume=0;
-                musicMenu.volume=0.05;
             }
         }
         if (evt.key == "b") {
@@ -354,12 +400,11 @@ function init() {
                 attack(1);
                 splash();
                 crabList[1].cooldown=cooldown;
-                musicGame.volume=0.6;
-                musicMenu.volume=0;
+                
         }   }
-        musicGame.play();
-            musicMenu.play();
     })
+
+    
 
     canvas.addEventListener('keyup', (evt) => {
         keys[evt.key] = false;
@@ -368,8 +413,13 @@ function init() {
     canvas.addEventListener("mousemove", setMousePosition, false);
 
     canvas.addEventListener('click', setClickPosition, false); 
+    canvas.addEventListener('click', () => {
+        musicGame.play();
+        musicMenu.play();
+    }, {once: true});
     /* ---------------------------------------- */
-
+    
+    
 
     window.requestAnimationFrame(gameLoop); // start the first frame request
 
@@ -390,7 +440,7 @@ function gameLoop(timeStamp) {
             iter++;
             key();
             crabMovement();
-            //seagullActivity();
+            seagullActivity();
             winningCondition();
             break;
 
@@ -418,6 +468,8 @@ function draw() {
             
     
             drawBackground();
+            if(alert)
+                drawAlert();
             drawZone();
             drawCrabs();
             drawRocks();
@@ -457,10 +509,12 @@ function seagullActivity() {
             }
         })
         seagullSound.play();
+        alert = true;
     }
 
-    if (seagullTime + random(2, 4) == totalSeconds && seagull.state == 0) {
+    if (seagullTime + random(4, 8) == totalSeconds && seagull.state == 0) {
         seagull.scout(crabList)
+        alert = false;
     }
 
     switch (seagull.state) {
@@ -517,18 +571,20 @@ function key() {
             if (key == "d") {
                 crabList[0].speedX += 0.1;
             }
-            if (key == "i") {
-                crabList[1].speedY -= 0.1;
-            }
-            if (key == "j") {
-                crabList[1].speedX -= 0.1;
-            }
-            if (key == "k") {
-                crabList[1].speedY += 0.1;
-            }
-            if (key == "l") {
-                crabList[1].speedX += 0.1;
-            }
+            if(!botChoice){
+                if (key == "i") {
+                    crabList[1].speedY -= 0.1;
+                }
+                if (key == "j") {
+                    crabList[1].speedX -= 0.1;
+                }
+                if (key == "k") {
+                    crabList[1].speedY += 0.1;
+                }
+                if (key == "l") {
+                    crabList[1].speedX += 0.1;
+                }
+            }   
         }
     }
 }
@@ -745,7 +801,7 @@ function winningCondition() {
 }
 
 function drawTimer() {
-    context.font = '60px crab';
+    context.font = '60px Crab';
     if (totalSeconds % 60 > 50)
         context.fillText("0" + (60 - totalSeconds % 60), 20, 55);
     else
@@ -790,7 +846,7 @@ function drawCrabs() {
                 context.drawImage(crab.image2, crab.x, crab.y, crab.width, crab.height);
                 
                 if (crab.shoes != -1) {
-                    context.drawImage(clothings[1][crab.shoes].image1, crab.x, crab.y, crab.width, crab.height);
+                    context.drawImage(clothings[1][crab.shoes].image2, crab.x, crab.y, crab.width, crab.height);
                     
                 }
                 if(iter%25==24){
@@ -799,7 +855,7 @@ function drawCrabs() {
             } else {
                 context.drawImage(crab.image, crab.x, crab.y, crab.width, crab.height);
                 if (crab.shoes != -1) {
-                    context.drawImage(clothings[1][crab.shoes].image2, crab.x, crab.y, crab.width, crab.height);
+                    context.drawImage(clothings[1][crab.shoes].image1, crab.x, crab.y, crab.width, crab.height);
                 }
             }
 
@@ -830,7 +886,12 @@ function drawCrabs() {
 
 function drawSeagull() {
     if (seagull.state >= 0) {
-        context.drawImage(seagull.image, seagull.x, seagull.y, seagull.width, seagull.height);
+        if(iter%25>12){
+            context.drawImage(seagull.image1, seagull.x, seagull.y, seagull.width, seagull.height);
+        }
+        else{
+            context.drawImage(seagull.image2, seagull.x, seagull.y, seagull.width, seagull.height);
+        }
     }
 }
 
@@ -838,9 +899,9 @@ function drawVictoryScreen() {
     if (winners.length == 0) {
         winningMsg = "Tout le monde est mort, personne n'est kool sur cette plage...";
     } else if (winners.length == 1)
-        winningMsg = "Le crabe n°" + winners[0].id + " a gagné avec " + pointsCalc(winners[0]) + " points !";
+        winningMsg = "Le crabe " + winners[0].id + " gagne avec " + pointsCalc(winners[0]) + " points !";
     else {
-        winningMsg = "Les crabes n°";
+        winningMsg = "Les crabes ";
         winners.forEach((winner) => {
             winningMsg += winner.id + ", ";
         });
@@ -848,12 +909,18 @@ function drawVictoryScreen() {
         winningMsg += " gagnent avec " + pointsCalc(winners[0]) + " points !";
     }
 
-    context.font = '60px crab';
+    context.font = '60px Crab';
     context.fillText(winningMsg, 20, 55);
 }
 
 function drawBackground() {
     context.drawImage(background, 0, 0, width, height);
+}
+
+function drawAlert(){
+    if(iter%200>100){
+        context.drawImage(alertImage, 0, 0, width, height);
+    }
 }
 
 function setMousePosition(evt) {
@@ -945,8 +1012,27 @@ function drawCrabChoice(){
 function goGame(){
     if (pret1 && pret2) {
         state = 1 ;
-        background = background1
-        
+        musicGame.volume=0.6;
+        musicMenu.volume=0;
+        if(mapSelection==0){
+            background = background1;
+            rockList = rockList1;
+            zones = zones1;
+        }
+        else{
+            background = background2;
+            rockList = rockList2;
+            zones = zones2;
+        }
+        if(botChoice)
+            crabList = crabListBot;
+        else    
+            crabList = crabListNoBot;
+            
+        crabList[0].image=tabCrabCoupleImages[crab1Choice][0];
+        crabList[0].image2=tabCrabCoupleImages[crab1Choice][1];
+        crabList[1].image=tabCrabCoupleImages[crab2Choice][0];
+        crabList[1].image2=tabCrabCoupleImages[crab2Choice][1];
     }
 }
 
@@ -961,6 +1047,7 @@ function selectAction(button){
                 pret2 = false ; 
                 choiceButton[6].image = ok1 ; 
                 choiceButton[7].image = ok1 ; 
+                choiceButton[5].image = bot ; 
             }
             if(menuState == 2) menuState = 0 ;  
             else menuState += button.go ;
@@ -999,7 +1086,7 @@ function selectAction(button){
             crab1 = tabCrabImage[crab1Choice]; 
             break ;
         case -7 :  // fleche changer crab1 droite 
-            crab1Choice = mod((crab2Choice+1),3) ; 
+            crab1Choice = mod((crab1Choice+1),3) ; 
             crab1 = tabCrabImage[crab1Choice]; 
             break ;
         case -8 :  // fleche changer crab2 gauche

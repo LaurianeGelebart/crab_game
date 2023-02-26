@@ -1,10 +1,11 @@
 class Seagull{
-    constructor(width,height,image){
+    constructor(width,height,image1, image2){
         this.x = -width;
         this.y = 0;
         this.width=width;
         this.height = height;
-        this.image = image;
+        this.image1 = image1;
+        this.image2 = image2;
         this.directionX=0;
         this.directionY=0;
         this.preys=[];

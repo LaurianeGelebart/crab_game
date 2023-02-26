@@ -15,3 +15,13 @@ body{
     background-color: yellow;
     
 }
+
+#load {
+    font-family:Crab;
+    visibility: hidden;
+    height: 0px;
+}
+@font-face {
+    font-family:Crab; 
+    src: url('crab.regular.ttf');
+    }
