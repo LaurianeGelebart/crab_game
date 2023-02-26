@@ -15,7 +15,7 @@ class Seagull{
 
     spawn(width,height){
         
-        switch (random(0,1)){
+        switch (random(1,1)){
             case 0 :
                 this.x = -this.width;
                 break;

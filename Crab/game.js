@@ -17,7 +17,7 @@ let splashList = [splash1, splash2, splash3, splash4];
 let alert = false;
 let hitbox = 0.8;
 let cooldown = 100;
-let totalSeconds = 1;
+let totalSeconds;
 let gatheringTime = 750;
 let play_button, how_button;
 let animationSize = 1;
@@ -25,6 +25,9 @@ let buttonsSet, homeButton, choiceButton, goalButton, pauseButton;
 let mouseX = 0, mouseY = 0, clickX = -1, clickY = -1;
 let pret1, pret2, botChoice; 
 let crab1Choice, crab2Choice; 
+
+
+let secondsInterval, clothingInterval;
 
 let maxScore;
 let winners = [];
@@ -59,6 +62,7 @@ const hat2 = new Image();
 const hat2Preview = new Image();
 const hat3 = new Image();
 const hat3Preview = new Image();
+const hat4 = new Image();
 
 const shoes1Preview = new Image();
 const shoes11 = new Image();
@@ -130,6 +134,9 @@ const bot2 = new Image();
 const ok1 = new Image();
 const ok2 = new Image();
 
+const backHome = new Image();
+const resume = new Image();
+
 const klarence = new Image();
 const kapucine = new Image();
 const karlos = new Image();
@@ -162,6 +169,7 @@ function init() {
     context.font = width/15+'px crab';
 
     iter = 0;
+    totalSeconds = 1;
     
     background1.src = 'img/background1.png';
     background2.src = 'img/background2.png';
@@ -192,6 +200,7 @@ function init() {
     hat2Preview.src = 'img/hat2P.png';
     hat3.src = 'img/hat3.png';
     hat3Preview.src = 'img/hat3P.png';
+    hat4.src = 'img/krown.png';
 
     shoes11.src = 'img/shoes1.png';
     shoes1Preview.src = 'img/shoes1P.png';
@@ -199,9 +208,9 @@ function init() {
     shoes21.src = 'img/shoes1.png';
     shoes2Preview.src = 'img/shoes1P.png';
     shoes22.src = 'img/shoes12.png';
-    shoes31.src = 'img/shoes1.png';
-    shoes3Preview.src = 'img/shoes1P.png';
-    shoes32.src = 'img/shoes12.png';
+    shoes31.src = 'img/shoes31.png';
+    shoes3Preview.src = 'img/shoes3P.png';
+    shoes32.src = 'img/shoes32.png';
 
     glasses1.src = 'img/glasses.png';
     glasses1Preview.src = 'img/glasses1P.png';
@@ -214,8 +223,9 @@ function init() {
     hand1Preview.src = 'img/hand1P.png';
     hand2.src = 'img/hand2.png';
     hand2Preview.src = 'img/hand2P.png';
-    hand3.src = 'img/hand2.png';
-    hand3Preview.src = 'img/hand2P.png';
+    hand3.src = 'img/hand3.png';
+    hand3Preview.src = 'img/hand3P.png';
+    
 
     alertImage.src = 'img/alert.png';
 
@@ -244,6 +254,9 @@ function init() {
     bot2.src = 'img/playBotOK.png';
     ok1.src = 'img/pret.png';
     ok2.src = 'img/okPret.png';
+
+    backHome.src = 'img/backHome.png';
+    resume.src = 'img/reprendre.png';
 
     klarence.src = 'img/klarence.png';
     kapucine.src = 'img/kapucine.png';
@@ -283,12 +296,13 @@ function init() {
         [
             new Clothing(1, hat1, hat1, hat1Preview),
             new Clothing(1, hat2, hat2, hat2Preview),
-            new Clothing(1, hat2, hat2, hat2Preview)
+            new Clothing(1, hat3, hat3, hat3Preview),
+            new Clothing(1, hat4, hat4, hat3Preview)
         ],
         [
             new Clothing(1, shoes11, shoes12, shoes1Preview),
             new Clothing(1, shoes21, shoes22, shoes2Preview),
-            new Clothing(1, shoes21, shoes22, shoes2Preview)
+            new Clothing(1, shoes31, shoes32, shoes3Preview)
         ],
         [
             new Clothing(1, glasses1, glasses1, glasses1Preview),
@@ -298,7 +312,7 @@ function init() {
         [
             new Clothing(1, hand1, hand1, hand1Preview),
             new Clothing(1, hand2, hand2, hand2Preview),
-            new Clothing(1, hand2, hand2, hand2Preview)
+            new Clothing(1, hand3, hand3, hand3Preview)
         ]
     ];
 
@@ -368,12 +382,7 @@ function init() {
     
 
     // Time
-    setInterval(() => {
-        totalSeconds++;
-    }, 1000)
-    setInterval(() => {
-        addNewClothings();
-    }, 15000)
+    
     seagullSound = new Audio('sound/seagull.wav');
     seagullSound.volume = 0.005;
     seagullTime = getTimeOfNextSeagull(totalSeconds);
@@ -404,8 +413,8 @@ function init() {
     ]
 
     pauseButton = [
-        new Button(0.1*width, 0.6* height, 0.05*width, 0.1*height,playB,0),
-        new Button(0.1*width, 0.3* height, 0.05*width, 0.1*height,playB,1)
+        new Button(0.15*width, 0.45* height, 0.25*width, 0.15*height,resume,-10),
+        new Button(0.17*width, 0.65* height, 0.21*width, 0.15*height,backHome,0)
     ]
 
 
@@ -429,8 +438,11 @@ function init() {
                 
         }   }
 
-        if(state == 1 && evt.key == "escape"){
+        if(state == 1 && evt.key == "Escape"){
             state = 0;
+            menuState = 6;
+            clearInterval(secondsInterval);
+            clearInterval(clothingInterval);
         } 
     })
 
@@ -808,6 +820,8 @@ function winningCondition() {
             context.fillStyle = "#AA323D"
             state = 2;
             winners.push(crab);
+            clearInterval(secondsInterval);
+            clearInterval(clothingInterval);
         }
     })
     if (nbDead >= crabList.length - 1 && seagull.preys.length == 0) {
@@ -817,6 +831,8 @@ function winningCondition() {
                 context.fillStyle = "#AA323D"
                 crab.won = 1;
                 winners.push(crab);
+                clearInterval(secondsInterval);
+                clearInterval(clothingInterval);
             }
         })
         state = 2;
@@ -832,6 +848,8 @@ function winningCondition() {
                 winners.push(crab);
             }
         })
+        clearInterval(secondsInterval);
+        clearInterval(clothingInterval);
     }
 
 }
@@ -962,10 +980,6 @@ function drawVictoryScreen() {
         context.drawImage(bothWin,0,0,width,height);
     }
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> lauriane_works6
 
 
 function drawBackground() {
@@ -1015,6 +1029,10 @@ function buttonsPlay(){
             background = quick ; 
             buttonsSet = goalButton ; 
             break 
+        case 6 :
+            background = pause;
+            buttonsSet = pauseButton;
+            break;
     }
 }
 
@@ -1090,6 +1108,17 @@ function goGame(){
         crabList[1].image=tabCrabCoupleImages[crab2Choice][0];
         crabList[1].image2=tabCrabCoupleImages[crab2Choice][1];
         crabList[1].name = tabCrabNames[crab2Choice];
+
+        pret1=false; 
+        pret2=false;
+        botChoice=false;
+
+        secondsInterval = setInterval(() => {
+            totalSeconds++;
+        }, 1000)
+        clothingInterval = setInterval(() => {
+            addNewClothings();
+        }, 15000)
     }
 }
 
@@ -1154,7 +1183,24 @@ function selectAction(button){
             crab2Choice = mod((crab2Choice+1),3) ; 
             crab2 = tabCrabImage[crab2Choice]; 
             break ;
+        case -10 :  // retour jeu 
+            state = 1 ; 
+            secondsInterval = setInterval(() => {
+                totalSeconds++;
+            }, 1000)
+            clothingInterval = setInterval(() => {
+                addNewClothings();
+            }, 15000)
+            if(mapSelection==0)
+                background = background1;
+            else
+                background = background2;
+            crabList.forEach((crab) => {
+                crab.hat = 3;
+            })
+            break ;
         default: // aller à la page
+             console.log("ici"); 
              menuState = button.go ; 
              break ; 
         } 
